@@ -27,15 +27,17 @@ server.post('/api/posts', (request, response) => {
 })
 
 server.post('/api/posts/:id/comments', (req, res) => {
-    const comment = req.body
-    comment.post_id = req.params.id
+    const comment = {...req.body, post_id: req.params.id}
 
     Posts.findById(req.params.id)
         .then(post => {
-            if (!comment.text) {
-                res.send('yass')
+            if (post.length == 0) {
+                res.status(404).json({ message: "The post with the specified ID does not exist." })
+            } else {
+                res.send('hello')
             }
         })
+
 })
 
 const port = 8000
