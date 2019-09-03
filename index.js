@@ -33,8 +33,17 @@ server.post('/api/posts/:id/comments', (req, res) => {
         .then(post => {
             if (post.length == 0) {
                 res.status(404).json({ message: "The post with the specified ID does not exist." })
+            } else if (!comment.text) {
+                res.status(400).json({ errorMessage: "Please provide text for the comment." })
             } else {
-                res.send('hello')
+                Posts.insertComment(comment)
+                    .then(() => {
+                        res.status(201).json(comment)
+                    })
+                    .catch(() => {
+                        res.status(500).json({ error: "There was an error while saving the comment to the database" })
+                    })
+
             }
         })
 
